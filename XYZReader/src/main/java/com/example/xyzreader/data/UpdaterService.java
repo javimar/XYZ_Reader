@@ -20,7 +20,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class UpdaterService extends IntentService {
+public class UpdaterService extends IntentService
+{
     private static final String TAG = "UpdaterService";
 
     public static final String BROADCAST_ACTION_STATE_CHANGE
@@ -33,7 +34,8 @@ public class UpdaterService extends IntentService {
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    protected void onHandleIntent(Intent intent)
+    {
         Time time = new Time();
 
         ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);

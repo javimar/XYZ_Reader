@@ -8,5 +8,8 @@
     <string name="action_share">Share</string>
 
     <string name="up">Up</string>
+    <string name="detail_pic">Book picture</string>
+
+    <string name="listing_literal"> Book listing</string>
 
 </resources>

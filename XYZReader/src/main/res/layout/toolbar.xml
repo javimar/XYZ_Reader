@@ -1,0 +1,13 @@
+<android.support.v7.widget.Toolbar
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/toolbar_main"
+    android:layout_width="match_parent"
+    android:layout_height="?attr/actionBarSize"
+    app:layout_collapseMode="pin"
+    app:titleTextAppearance="@style/Base.TextAppearance.AppCompat.Large"
+    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+
+
+

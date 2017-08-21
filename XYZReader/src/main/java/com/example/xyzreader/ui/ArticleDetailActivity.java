@@ -1,5 +1,6 @@
 package com.example.xyzreader.ui;
 
+import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.LoaderManager;
@@ -13,6 +14,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowInsets;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
@@ -29,10 +32,13 @@ public class ArticleDetailActivity extends AppCompatActivity
 {
     private Cursor mCursor;
     private long mStartId;
-
+    private int mTopInset;
     private long mSelectedItemId;
+    private int mSelectedItemUpButtonFloor = Integer.MAX_VALUE;
 
     @BindView(R.id.pager) ViewPager mPager;
+    @BindView(R.id.up_container) View mUpButtonContainer;
+    @BindView(R.id.action_up) View mUpButton;
 
     private MyPagerAdapter mPagerAdapter;
 
@@ -62,14 +68,47 @@ public class ArticleDetailActivity extends AppCompatActivity
         mPager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
         {
             @Override
+            public void onPageScrollStateChanged(int state) {
+                super.onPageScrollStateChanged(state);
+                mUpButton.animate()
+                        .alpha((state == ViewPager.SCROLL_STATE_IDLE) ? 1f : 0f)
+                        .setDuration(300);
+            }
+
+            @Override
             public void onPageSelected(int position) {
                 if (mCursor != null) {
                     mCursor.moveToPosition(position);
                 }
                 mSelectedItemId = mCursor.getLong(ArticleLoader.Query._ID);
+                updateUpButtonPosition();
             }
         });
 
+        mUpButtonContainer.setVisibility(View.GONE);
+        mUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onSupportNavigateUp();
+            }
+        });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+        {
+            mUpButtonContainer.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener()
+            {
+                @TargetApi(Build.VERSION_CODES.KITKAT_WATCH)
+                @Override
+                public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets)
+                {
+                    view.onApplyWindowInsets(windowInsets);
+                    mTopInset = windowInsets.getSystemWindowInsetTop();
+                    mUpButtonContainer.setTranslationY(mTopInset);
+                    updateUpButtonPosition();
+                    return windowInsets;
+                }
+            });
+        }
 
         if (savedInstanceState == null)
         {
@@ -119,10 +158,37 @@ public class ArticleDetailActivity extends AppCompatActivity
     }
 
 
+    public void onUpButtonFloorChanged(long itemId, ArticleDetailFragment fragment)
+    {
+        if (itemId == mSelectedItemId) {
+            mSelectedItemUpButtonFloor = fragment.getUpButtonFloor();
+            updateUpButtonPosition();
+        }
+    }
+
+
+    private void updateUpButtonPosition()
+    {
+        int upButtonNormalBottom = mTopInset + mUpButton.getHeight();
+        mUpButton.setTranslationY(Math.min(mSelectedItemUpButtonFloor - upButtonNormalBottom, 0));
+    }
+
+
     private class MyPagerAdapter extends FragmentStatePagerAdapter
     {
         MyPagerAdapter(FragmentManager fm) {
             super(fm);
+        }
+
+        @Override
+        public void setPrimaryItem(ViewGroup container, int position, Object object)
+        {
+            super.setPrimaryItem(container, position, object);
+            ArticleDetailFragment fragment = (ArticleDetailFragment) object;
+            if (fragment != null) {
+                mSelectedItemUpButtonFloor = fragment.getUpButtonFloor();
+                updateUpButtonPosition();
+            }
         }
 
         @Override

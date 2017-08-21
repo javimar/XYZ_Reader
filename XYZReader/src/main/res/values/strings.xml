@@ -5,10 +5,12 @@
 
     <string name="action_refresh">Refresh</string>
     <string name="action_settings">Settings</string>
-    <string name="action_share">Share</string>
+    <string name="action_share">Share your book</string>
 
-    <string name="up">Up</string>
+    <string name="up_label">Up</string>
     <string name="detail_pic">Book picture</string>
+    <string name="toolbar_pic">Book picture shown in Toolbar</string>
+    <string name="book_label">Book:</string>
 
     <string name="listing_literal"> Book listing</string>
 

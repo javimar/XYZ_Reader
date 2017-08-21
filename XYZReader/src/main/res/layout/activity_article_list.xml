@@ -26,7 +26,9 @@
             app:expandedTitleMarginStart="@dimen/activity_margin_content"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|snap">
 
-            <include layout="@layout/toolbar" />
+            <include
+                android:id="@+id/toolbar_main"
+                layout="@layout/toolbar" />
 
         </android.support.design.widget.CollapsingToolbarLayout>
 

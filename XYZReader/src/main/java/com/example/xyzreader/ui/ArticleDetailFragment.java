@@ -8,7 +8,6 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 
@@ -87,8 +86,7 @@ public class ArticleDetailFragment extends Fragment implements
     @BindView(R.id.photo_container) View mPhotoContainerView;
 
 
-
-    private int mVibrant, mDarkVibrant, mTextColor = 0;
+    private int mVibrant, mDarkVibrant = 0;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -131,6 +129,11 @@ public class ArticleDetailFragment extends Fragment implements
 
         mPhotoContainerView.setVisibility(View.GONE);
         mStatusBarColorDrawable = new ColorDrawable(0);
+
+        // Toolbar logic
+        ((AppCompatActivity)getActivity()).setSupportActionBar(mToolbarDetail);
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mCollapsingToolbarLayout.setTitleEnabled(false);
 
         //FAB
         mShareFab.setOnClickListener(new View.OnClickListener() {

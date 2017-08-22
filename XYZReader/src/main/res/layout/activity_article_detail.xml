@@ -29,7 +29,6 @@
         android:layout_height="?actionBarSize">
 
         <ImageButton
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:id="@+id/action_up"
             android:layout_width="56dp"
             android:layout_height="?actionBarSize"

@@ -31,6 +31,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -84,7 +85,6 @@ public class ArticleDetailFragment extends Fragment implements
     @BindView(R.id.collapse_toolbar_detail) CollapsingToolbarLayout mCollapsingToolbarLayout;
     @BindView(R.id.meta_bar) View mMetaBar;
     @BindView(R.id.photo_container) View mPhotoContainerView;
-
 
     private int mVibrant, mDarkVibrant = 0;
 
@@ -145,6 +145,21 @@ public class ArticleDetailFragment extends Fragment implements
                         .setType("text/plain")
                         .setText("Some sample text")
                         .getIntent(), getString(R.string.action_share)));
+            }
+        });
+
+        // meta bar needs to collapse correctly with height of Toolbar
+        mMetaBar.getViewTreeObserver().addOnGlobalLayoutListener
+                (new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout()
+            {
+                int metaBarHeight = mMetaBar.getMeasuredHeight();
+                if(metaBarHeight > 0) {
+                    mMetaBar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    // set toolbar height to accomodate the meta_bar at run time
+                    mToolbarDetail.setMinimumHeight(metaBarHeight);
+                }
             }
         });
 
@@ -216,6 +231,7 @@ public class ArticleDetailFragment extends Fragment implements
                                 Bitmap bitmap = imageContainer.getBitmap();
                                 if (bitmap != null)
                                 {
+                                    // generate palette on the main thread :-/
                                     Palette palette = Palette.from(bitmap).generate();
                                     Palette.Swatch vibrantP = palette.getVibrantSwatch();
                                     Palette.Swatch darkVibrantP = palette.getDarkVibrantSwatch();

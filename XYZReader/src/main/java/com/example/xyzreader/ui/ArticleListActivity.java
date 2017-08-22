@@ -10,6 +10,9 @@ import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
@@ -31,6 +34,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -52,6 +57,8 @@ public class ArticleListActivity extends AppCompatActivity implements
     @BindView(R.id.swipe_refresh_layout) SwipeRefreshLayout mSwipeRefreshLayout;
 
     private boolean mIsRefreshing = false;
+
+    public BooksAdapter mBooksAdapter;
 
     @SuppressLint("SimpleDateFormat")
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss");
@@ -118,9 +125,9 @@ public class ArticleListActivity extends AppCompatActivity implements
     @Override
     public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor)
     {
-        Adapter adapter = new Adapter(cursor);
-        adapter.setHasStableIds(true);
-        mRecyclerView.setAdapter(adapter);
+        mBooksAdapter = new BooksAdapter(cursor);
+        mBooksAdapter.setHasStableIds(true);
+        mRecyclerView.setAdapter(mBooksAdapter);
         int columnCount = getResources().getInteger(R.integer.list_column_count);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, columnCount));
     }
@@ -131,11 +138,11 @@ public class ArticleListActivity extends AppCompatActivity implements
     }
 
 
-    private class Adapter extends RecyclerView.Adapter<ViewHolder>
+    public class BooksAdapter extends RecyclerView.Adapter<ViewHolder>
     {
         private Cursor mCursor;
 
-        public Adapter(Cursor cursor) {
+        public BooksAdapter(Cursor cursor) {
             mCursor = cursor;
         }
 
@@ -147,16 +154,21 @@ public class ArticleListActivity extends AppCompatActivity implements
         }
 
         @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+        {
             View view = getLayoutInflater().inflate(R.layout.list_item_article, parent, false);
             final ViewHolder vh = new ViewHolder(view);
-            view.setOnClickListener(new View.OnClickListener() {
+
+            view.setOnClickListener(new View.OnClickListener()
+            {
                 @Override
-                public void onClick(View view) {
+                public void onClick(View view)
+                {
                     startActivity(new Intent(Intent.ACTION_VIEW,
                             ItemsContract.Items.buildItemUri(getItemId(vh.getAdapterPosition()))));
                 }
             });
+
             return vh;
         }
 
@@ -204,6 +216,7 @@ public class ArticleListActivity extends AppCompatActivity implements
         }
     }
 
+
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
         @BindView(R.id.book_thumbnail)DynamicHeightNetworkImageView thumbnailView;
@@ -216,4 +229,5 @@ public class ArticleListActivity extends AppCompatActivity implements
             ButterKnife.bind(this, view);
         }
     }
+
 }

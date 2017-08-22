@@ -18,17 +18,13 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <!--suppress AndroidLintContentDescription -->
         <com.example.xyzreader.ui.DynamicHeightNetworkImageView
             android:id="@+id/book_thumbnail"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:maxHeight="150dp"
-            android:maxWidth="150dp"
-            android:padding="5dp"
+            android:layout_height="0dp"
+            android:scaleType="fitXY"
             android:adjustViewBounds="true"
-        />
+            card_view:targetApi="lollipop" />
 
         <TextView
             android:id="@+id/article_title"

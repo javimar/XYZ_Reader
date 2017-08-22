@@ -1,5 +1,6 @@
 package com.example.xyzreader.ui;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -10,19 +11,28 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v13.app.FragmentStatePagerAdapter;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.WindowInsets;
+import android.widget.ImageView;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.ArticleLoader;
 import com.example.xyzreader.data.ItemsContract;
 
+import java.util.List;
+import java.util.Map;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.example.xyzreader.R.id.pager;
 
 /**
  * An activity representing a single Article detail screen, letting you swipe between articles.
@@ -36,7 +46,10 @@ public class ArticleDetailActivity extends AppCompatActivity
     private long mSelectedItemId;
     private int mSelectedItemUpButtonFloor = Integer.MAX_VALUE;
 
-    @BindView(R.id.pager) ViewPager mPager;
+    public static int SelectedIndex = -1;
+    public static final String EXTRA_POSITION = "position";
+
+    @BindView(pager) ViewPager mPager;
     @BindView(R.id.up_container) View mUpButtonContainer;
     @BindView(R.id.action_up) View mUpButton;
 
@@ -59,6 +72,7 @@ public class ArticleDetailActivity extends AppCompatActivity
         // start loader
         getLoaderManager().initLoader(0, null, this);
 
+        // View Pager
         mPagerAdapter = new MyPagerAdapter(getFragmentManager());
         mPager.setAdapter(mPagerAdapter);
         mPager.setPageMargin((int) TypedValue
@@ -76,7 +90,10 @@ public class ArticleDetailActivity extends AppCompatActivity
             }
 
             @Override
-            public void onPageSelected(int position) {
+            public void onPageSelected(int position)
+            {
+                SelectedIndex = position;
+
                 if (mCursor != null) {
                     mCursor.moveToPosition(position);
                 }
@@ -155,15 +172,6 @@ public class ArticleDetailActivity extends AppCompatActivity
     {
         mCursor = null;
         mPagerAdapter.notifyDataSetChanged();
-    }
-
-
-    public void onUpButtonFloorChanged(long itemId, ArticleDetailFragment fragment)
-    {
-        if (itemId == mSelectedItemId) {
-            mSelectedItemUpButtonFloor = fragment.getUpButtonFloor();
-            updateUpButtonPosition();
-        }
     }
 
 

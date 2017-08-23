@@ -93,7 +93,7 @@
         android:contentDescription="@string/action_share"
         android:elevation="6dp"
         app:fabSize="normal"
-        app:pressedTranslationZ="12dp"
+        app:pressedTranslationZ="6dp"
         app:layout_anchor="@id/app_bar_detail"
         app:layout_anchorGravity="bottom|end"
 
